@@ -14,12 +14,16 @@
   .small .icon { width: 104px; height: 104px; }
   .small h1 { font-size: 36px; }
   .small p { font-size: 17px; margin-top: 10px; }
-  .large { width: 1400px; height: 560px; padding-left: 96px; gap: 44px; }
-  .large .icon { width: 168px; height: 168px; }
-  .large h1 { font-size: 64px; }
-  .large p { font-size: 28px; margin-top: 16px; max-width: 470px; }
-  .large .shot { position: absolute; left: 820px; top: 92px; width: 1040px; border-radius: 12px;
-                 box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+  .large { width: 1400px; height: 560px; padding-left: 80px; gap: 40px; }
+  .large .icon { width: 150px; height: 150px; }
+  .large h1 { font-size: 60px; }
+  .large p { font-size: 26px; margin-top: 16px; max-width: 420px; }
+  /* A window-sized crop of the bar and its workspace menu, kept inside the tile. */
+  .large .frame { position: absolute; right: 60px; top: 84px; width: 580px; height: 392px; overflow: hidden;
+                  border-radius: 14px; background: #fff; box-shadow: 0 24px 60px rgba(0,0,0,.35); }
+  .large .shot { display: block; width: 1500px; }
+  .large .frame::after { content: ''; position: absolute; inset: auto 0 0 0; height: 90px;
+                         background: linear-gradient(transparent, #fff); }
   .logo { width: 300px; height: 300px; justify-content: center; background: #fff; }
   .logo .icon { width: 236px; height: 236px; filter: none; }
 </style></head><body>
@@ -28,10 +32,10 @@
   fetch('../../../icons/src/icon.svg').then((r) => r.text()).then((svg) => {
     const icon = `<div class="icon">${svg.replace('<svg ', '<svg width="100%" height="100%" ')}</div>`;
     const text = `<div><h1>Superfavorites<br>Bar</h1><p>${size === 'large'
-      ? 'Workspaces, pins and quick search for your bookmarks, in a bar on every page.'
-      : 'Workspaces for your bookmarks'}</p></div>`;
+      ? 'Workspaces, pins and quick search for your favorites, in a bar on every page.'
+      : 'Workspaces for your favorites'}</p></div>`;
     document.body.innerHTML = size === 'logo' ? `<div class="tile logo">${icon}</div>`
-      : `<div class="tile ${size}">${icon}${text}${size === 'large' ? '<img class="shot" src="../../screenshots/workspaces.png">' : ''}</div>`;
+      : `<div class="tile ${size}">${icon}${text}${size === 'large' ? '<div class="frame"><img class="shot" src="../../screenshots/workspaces.png"></div>' : ''}</div>`;
     document.title = 'ready';
   });
 </script>
