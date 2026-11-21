@@ -18,5 +18,5 @@ for f in background.js content.js icon-themes.js options.js; do node --check "$f
 OUT="dist/superfavorites-bar-$VERSION.zip"
 mkdir -p dist
 rm -f "$OUT"
-zip -q -r -X "$OUT" $FILES -x '*.DS_Store'
+zip -q -r -X "$OUT" $FILES -x '*.DS_Store' 'icons/src/*'
 echo "$OUT"

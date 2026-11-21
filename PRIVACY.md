@@ -27,4 +27,4 @@ The extension makes one kind of request: when you give a workspace an icon by we
 
 ## Contact
 
-Questions or concerns: open an issue at https://github.com/pantulis/superbookmarks-bar/issues.
+Questions or concerns: open an issue at https://github.com/pantulis/superfavorites-bar/issues.

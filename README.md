@@ -224,6 +224,7 @@ To release a new version:
 For the store listings:
 
 - **Screenshots:** `docs/store/` has six 1280×800 shots, the size both stores accept.
+- **Promo graphics:** `docs/store/promo-small.png` (440×280, required by the Chrome Web Store), `docs/store/promo-large.png` (1400×560, optional in both stores) and `docs/store/logo.png` (300×300, for Edge Add-ons). `scripts/store-graphics.sh` renders them from `docs/store/src/promo.html` with headless Chrome.
 - **Privacy policy:** link to [`PRIVACY.md`](PRIVACY.md) on GitHub. It also explains each permission, which both stores ask you to justify.
 
 ## Limitations
@@ -245,7 +246,13 @@ For the store listings:
 | `options.html` / `options.js` | Settings page |
 | `icons/` | Extension icons |
 | `docs/screenshots/` | README screenshots, rendered with a sample set of favorites |
-| `docs/store/` | 1280×800 screenshots for the store listings |
+| `docs/store/` | Store screenshots (1280×800), promo tiles and logo |
+| `icons/src/icon.svg` | The icon's source; `scripts/icons.sh` renders the PNG sizes |
 | `scripts/pack.sh` | Builds the zip for the stores |
 | `.github/workflows/build.yml` | Runs `pack.sh` on GitHub and keeps the zip |
 | `PRIVACY.md` | Privacy policy and permission reasons for the store listings |
+| `LICENSE` | MIT license |
+
+## License
+
+[MIT](LICENSE) © 2026 Juan Lupión

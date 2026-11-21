@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <!-- Superfavorites Bar icon. Rendered to icons/*.png and docs/store/ by scripts/icons.sh. -->
+  <rect width="128" height="128" rx="26" fill="#0f6cbd"/>
+  <polygon points="64.00,25.00 74.29,52.84 103.94,54.02 80.64,72.41 88.69,100.98 64.00,84.50 39.31,100.98 47.36,72.41 24.06,54.02 53.71,52.84" fill="#fff" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>
+</svg>
