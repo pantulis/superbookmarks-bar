@@ -216,7 +216,7 @@ The settings:
 To release a new version:
 
 1. Bump `version` in `manifest.json`, commit, then tag and push: `git tag v1.0.1 && git push --tags`.
-2. Download the zip from the workflow run's **Artifacts**. GitHub wraps it in a second zip; unzip that once.
+2. Download the zip from the workflow run's **Artifacts**.
 3. Upload it by hand:
    - **Chrome Web Store:** [Developer Dashboard](https://chrome.google.com/webstore/devconsole) → the item → **Package** → **Upload new package**, then **Submit for review**.
    - **Edge Add-ons:** [Partner Center](https://partner.microsoft.com/dashboard/microsoftedge/overview) → the extension → **Packages** → **Replace**, then **Publish**.
