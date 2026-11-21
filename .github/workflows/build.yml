@@ -1,5 +1,6 @@
 # Builds the extension zip for the Chrome Web Store and Edge Add-ons. The zip
-# is attached to the run; uploading it to the stores is done by hand.
+# is attached to the run, and for a v* tag also published as a GitHub release.
+# Uploading it to the stores is done by hand.
 name: Build extension
 
 on:
@@ -12,6 +13,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write # to create releases
     steps:
       - uses: actions/checkout@v7
 
@@ -27,4 +30,12 @@ jobs:
         with:
           path: ${{ steps.pack.outputs.zip }}
           archive: false
+
+      - name: Publish release
+        if: github.ref_type == 'tag'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >
+          gh release create "$GITHUB_REF_NAME" "${{ steps.pack.outputs.zip }}"
+          --title "Superfavorites Bar ${GITHUB_REF_NAME#v}" --generate-notes --verify-tag
           if-no-files-found: error

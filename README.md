@@ -211,12 +211,12 @@ The settings:
 
 ## Build and publish
 
-`scripts/pack.sh` builds `dist/superfavorites-bar-<version>.zip` with only the files the extension needs. The same zip works for both stores. The **Build extension** GitHub workflow runs it on every push, pull request and `v*` tag, and attaches the zip to the run. For a tag, the tag must match `version` in `manifest.json` (e.g. `v1.0.1` for `1.0.1`).
+`scripts/pack.sh` builds `dist/superfavorites-bar-<version>.zip` with only the files the extension needs. The same zip works for both stores. The **Build extension** GitHub workflow runs it on every push, pull request and `v*` tag, and attaches the zip to the run. For a tag, the tag must match `version` in `manifest.json` (e.g. `v1.0.1` for `1.0.1`), and the workflow also publishes a [release](https://github.com/pantulis/superfavorites-bar/releases) with the zip and notes generated from the commits.
 
 To release a new version:
 
 1. Bump `version` in `manifest.json`, commit, then tag and push: `git tag v1.0.1 && git push --tags`.
-2. Download the zip from the workflow run's **Artifacts**.
+2. Download the zip from the new release on the [Releases page](https://github.com/pantulis/superfavorites-bar/releases).
 3. Upload it by hand:
    - **Chrome Web Store:** [Developer Dashboard](https://chrome.google.com/webstore/devconsole) → the item → **Package** → **Upload new package**, then **Submit for review**.
    - **Edge Add-ons:** [Partner Center](https://partner.microsoft.com/dashboard/microsoftedge/overview) → the extension → **Packages** → **Replace**, then **Publish**.
