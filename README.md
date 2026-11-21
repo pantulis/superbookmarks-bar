@@ -209,6 +209,23 @@ The settings:
 
   **Condensed and expanded widths** only work with a font that has those styles, such as Arial Narrow, Avenir Next Condensed or Roboto Condensed. Browsers don't squeeze other fonts. On a Mac, condensed families are often listed separately, e.g. "Avenir Next Condensed", so choosing one is the surest way to get a narrow bar. Like the icon theme, typography is saved per device.
 
+## Build and publish
+
+`scripts/pack.sh` builds `dist/superfavorites-bar-<version>.zip` with only the files the extension needs. The same zip works for both stores. The **Build extension** GitHub workflow runs it on every push, pull request and `v*` tag, and attaches the zip to the run. For a tag, the tag must match `version` in `manifest.json` (e.g. `v1.0.1` for `1.0.1`).
+
+To release a new version:
+
+1. Bump `version` in `manifest.json`, commit, then tag and push: `git tag v1.0.1 && git push --tags`.
+2. Download the zip from the workflow run's **Artifacts**. GitHub wraps it in a second zip; unzip that once.
+3. Upload it by hand:
+   - **Chrome Web Store:** [Developer Dashboard](https://chrome.google.com/webstore/devconsole) → the item → **Package** → **Upload new package**, then **Submit for review**.
+   - **Edge Add-ons:** [Partner Center](https://partner.microsoft.com/dashboard/microsoftedge/overview) → the extension → **Packages** → **Replace**, then **Publish**.
+
+For the store listings:
+
+- **Screenshots:** `docs/store/` has six 1280×800 shots, the size both stores accept.
+- **Privacy policy:** link to [`PRIVACY.md`](PRIVACY.md) on GitHub. It also explains each permission, which both stores ask you to justify.
+
 ## Limitations
 
 - Browsers don't let extensions inject into their own pages (`edge://`, `chrome://`), the New Tab page or the extension stores, so the bar doesn't appear there.
@@ -228,3 +245,7 @@ The settings:
 | `options.html` / `options.js` | Settings page |
 | `icons/` | Extension icons |
 | `docs/screenshots/` | README screenshots, rendered with a sample set of favorites |
+| `docs/store/` | 1280×800 screenshots for the store listings |
+| `scripts/pack.sh` | Builds the zip for the stores |
+| `.github/workflows/build.yml` | Runs `pack.sh` on GitHub and keeps the zip |
+| `PRIVACY.md` | Privacy policy and permission reasons for the store listings |
