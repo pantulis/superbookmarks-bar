@@ -1,5 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
-  <!-- Superfavorites Bar icon. Rendered to icons/*.png and docs/store/ by scripts/icons.sh. -->
-  <rect width="128" height="128" rx="26" fill="#0f6cbd"/>
-  <polygon points="64.00,25.00 74.29,52.84 103.94,54.02 80.64,72.41 88.69,100.98 64.00,84.50 39.31,100.98 47.36,72.41 24.06,54.02 53.71,52.84" fill="#fff" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>
-</svg>
+<!-- Superfavorites Bar icon: an azure-to-navy bookmark with a gold star on a light tile.
+     Rendered to icons/*.png by scripts/icons.sh and used by docs/store/src/promo.html. --><defs>
+<linearGradient id="tile" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffffff"/><stop offset="1" stop-color="#e8eef6"/></linearGradient>
+<linearGradient id="rib" x1="0" y1="0" x2="0" y2="1"><stop offset="0.00" stop-color="#4fa3ff"/><stop offset="1.00" stop-color="#0b2a5b"/></linearGradient></defs>
+<rect width="128" height="128" rx="28" fill="url(#tile)"/>
+<rect x="1.5" y="1.5" width="125" height="125" rx="26.5" fill="none" stroke="#cfd8e3" stroke-width="3"/>
+<path d="M32 24 q0 -8 8 -8 h48 q8 0 8 8 v90 l-32 -22 l-32 22 z" fill="url(#rib)"/>
+<polygon points="64.00,37.00 68.69,49.54 82.07,50.13 71.59,58.47 75.17,71.37 64.00,63.98 52.83,71.37 56.41,58.47 45.93,50.13 59.31,49.54" fill="#ffd54a" stroke="#ffd54a" stroke-width="3" stroke-linejoin="round"/></svg>
