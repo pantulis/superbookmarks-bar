@@ -160,6 +160,46 @@ async function addPinned(msg) {
     : chrome.bookmarks.create({ parentId, title: msg.title, url: msg.url });
 }
 
+// --- Links dropped on the bar --------------------------------------------------
+
+// Dragging a favorites folder from the browser's own favorites bar hands the
+// page only the addresses of every favorite inside it, subfolders flattened,
+// with no titles or folder names. Since they are the user's own favorites, find
+// the folder they came from and copy it; otherwise add the links one by one,
+// titled after an existing favorite with the same address.
+async function addDropped({ links, parentId, index }) {
+  parentId ??= await resolveFolderId();
+  const [root] = await chrome.bookmarks.getTree();
+  const urls = links.map((l) => l.url).join('\n');
+  const flatUrls = (node) => (node.children ?? []).flatMap((c) => (c.url ? [c.url] : flatUrls(c)));
+  // The outermost folder that matches, skipping the browser's own top folders.
+  const findFolder = (node) => {
+    for (const c of node.children ?? []) {
+      if (c.url) continue;
+      if (c.parentId !== root.id && flatUrls(c).join('\n') === urls) return c;
+      const found = findFolder(c);
+      if (found) return found;
+    }
+    return null;
+  };
+  const source = links.length > 1 && findFolder(root);
+  if (source) return copyFolder(source, parentId, index);
+
+  for (const [i, { url, title }] of links.entries()) {
+    const known = title === url && (await chrome.bookmarks.search({ url }).catch(() => []))[0];
+    await chrome.bookmarks.create({ parentId, index: index === undefined ? undefined : index + i, title: known?.title || title, url });
+  }
+}
+
+async function copyFolder(folder, parentId, index) {
+  const copy = await chrome.bookmarks.create({ parentId, index, title: folder.title });
+  for (const c of folder.children ?? []) {
+    if (c.url) await chrome.bookmarks.create({ parentId: copy.id, title: c.title, url: c.url });
+    else await copyFolder(c, copy.id);
+  }
+  return copy;
+}
+
 // A tab matches if its address is the same (ignoring #fragment and a trailing
 // slash) or lies under it, so a pinned https://mail.google.com/ finds the inbox.
 // Prefer exact matches, then the sender's window, then the most recently used tab.
@@ -574,6 +614,8 @@ async function handleMessage(msg, sender) {
         title: msg.title,
         url: msg.url,
       });
+    case 'addDropped':
+      return addDropped(msg);
     case 'createFolder':
       return chrome.bookmarks.create({
         parentId: msg.parentId ?? (await resolveFolderId()),

@@ -1652,10 +1652,8 @@
     springLoad(null);
   }
 
-  // Title of a link dragged in from a page (Chromium supplies it as HTML).
-  function draggedLinkTitle(dt) {
-    return dt
-      .getData('text/html')
+  const decodeHtml = (html) =>
+    html
       .replace(/<[^>]*>/g, ' ')
       .replace(/&nbsp;/g, ' ')
       .replace(/&lt;/g, '<')
@@ -1665,6 +1663,23 @@
       .replace(/&amp;/g, '&')
       .replace(/\s+/g, ' ')
       .trim();
+
+  // Links dragged in from outside, as [{ url, title }]. Chromium lists the
+  // addresses in text/uri-list and, for links dragged from a page, supplies the
+  // titles as HTML links. A folder dragged from the browser's favorites bar
+  // brings only addresses; the background fills in the rest (addDropped).
+  function draggedLinks(dt) {
+    const urls = dt.getData('text/uri-list').split(/\r?\n/).filter((line) => line && !line.startsWith('#'));
+    const html = dt.getData('text/html');
+    const anchors = [...html.matchAll(/<a\b[^>]*?\bhref\s*=\s*(?:"([^"]*)"|'([^']*)')[^>]*>([\s\S]*?)<\/a>/gi)].map((m) => ({
+      href: decodeHtml(m[1] ?? m[2]),
+      title: decodeHtml(m[3]),
+    }));
+    return urls.map((url, i) => {
+      const anchor = anchors.find((a) => a.href === url) ?? (anchors.length === urls.length ? anchors[i] : null);
+      const title = anchor?.title || (urls.length === 1 ? decodeHtml(html) : '');
+      return { url, title: title || url };
+    });
   }
 
   root.addEventListener('dragstart', (e) => {
@@ -1705,11 +1720,8 @@
       send({ type: 'move', id: node.id, parentId, index });
       return;
     }
-    const url = e.dataTransfer
-      .getData('text/uri-list')
-      .split(/\r?\n/)
-      .find((line) => line && !line.startsWith('#'));
-    if (url) send({ type: 'add', url, title: draggedLinkTitle(e.dataTransfer) || url, parentId, index });
+    const links = draggedLinks(e.dataTransfer);
+    if (links.length) send({ type: 'addDropped', links, parentId, index });
   });
 
   root.addEventListener('dragend', endDrag);
