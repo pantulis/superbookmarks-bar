@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Superfavorites Bar – Settings</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f7f7; --card: #ffffff; --fg: #1b1b1b; --muted: #616161; --border: #e0e0e0; --accent: #0f6cbd;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #202020; --card: #2b2b2b; --fg: #f2f2f2; --muted: #ababab; --border: #3d3d3d; --accent: #4aa0f0; }
+    }
+    body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.5 "Segoe UI", system-ui, sans-serif; }
+    /* Compact layout when shown as the toolbar popup (options.html#popup). */
+    .popup body { width: 400px; }
+    .popup main { margin: 14px auto; }
+    .popup h1 { font-size: 17px; margin-bottom: 12px; }
+    .popup .picker { max-height: 180px; }
+    .popup .themes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .popup .theme-icons { gap: 4px; }
+    .popup .theme-icons svg { width: 13px; height: 13px; }
+    .popup p.note, #openTab, #done { display: none; }
+    .popup #openTab { display: inline-block; }
+    /* Inside the window opened from the bar (options.html#dialog). */
+    .dialog main { margin: 20px auto 0; }
+    .dialog .actions { position: sticky; bottom: 0; padding: 12px 0; background: var(--bg); border-top: 1px solid var(--border); }
+    .dialog #done { display: inline-block; margin-left: auto; color: #fff; background: var(--accent); border-color: var(--accent); }
+    h2 { font-size: 15px; font-weight: 600; margin: 24px 0 8px; }
+    .preview {
+      display: flex; align-items: center; gap: 2px; height: 32px; padding: 0 6px; overflow: hidden;
+      border: 1px solid var(--border); border-radius: 6px; background: var(--bg); line-height: 1.2;
+    }
+    .preview span { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; height: 24px; padding: 0 8px; border-radius: 4px; white-space: nowrap; }
+    .preview svg { width: 16px; height: 16px; flex-shrink: 0; }
+    .preview .strong { background: rgba(127, 127, 127, .12); }
+    input[type="range"] { width: 160px; accent-color: var(--accent); }
+    .range { display: flex; align-items: center; gap: 8px; }
+    .range output { min-width: 34px; text-align: right; color: var(--muted); }
+    main { max-width: 560px; margin: 40px auto; padding: 0 16px; }
+    h1 { font-size: 22px; font-weight: 600; margin: 0 0 20px; }
+    section { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 4px 16px; }
+    .row { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 0; border-bottom: 1px solid var(--border); }
+    .row:last-child { border-bottom: 0; }
+    .row small { display: block; color: var(--muted); font-size: 12px; }
+    select { font: inherit; padding: 4px 6px; max-width: 260px; }
+    .row.stacked { flex-direction: column; align-items: stretch; gap: 8px; }
+    .picker { max-height: 260px; overflow-y: auto; padding: 2px; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); outline: none; }
+    .picker:focus { border-color: var(--accent); }
+    .picker-row { display: flex; align-items: center; gap: 4px; height: 28px; padding-right: 8px; border-radius: 4px; white-space: nowrap; cursor: default; }
+    .picker-row:hover { background: rgba(127, 127, 127, .12); }
+    .picker-row.selected { color: #fff; background: var(--accent); }
+    .picker-row .name { overflow: hidden; text-overflow: ellipsis; }
+    .folder-choice { display: flex; align-items: center; gap: 8px; }
+    .folder-path { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
+    .folder-path b { color: var(--fg); font-weight: 600; }
+    #folderDialog {
+      box-sizing: border-box; width: min(420px, calc(100vw - 32px)); padding: 16px; color: var(--fg); background: var(--card);
+      border: 1px solid var(--border); border-radius: 10px; box-shadow: 0 8px 28px rgba(0, 0, 0, .3);
+    }
+    #folderDialog::backdrop { background: rgba(0, 0, 0, .35); }
+    #folderDialog form { display: flex; flex-direction: column; gap: 8px; }
+    #folderDialog .picker { height: min(320px, calc(100vh - 200px)); max-height: none; }
+    .dialog-title { font-size: 15px; font-weight: 600; }
+    .dialog-help { color: var(--muted); font-size: 12px; }
+    .dialog-buttons { display: flex; justify-content: flex-end; gap: 8px; margin-top: 4px; }
+    button.primary { color: #fff; background: var(--accent); border-color: var(--accent); }
+    kbd {
+      display: inline-block; min-width: 22px; padding: 2px 7px; font-size: 13px; line-height: 1.4; text-align: center;
+      border: 1px solid var(--border); border-bottom-width: 2px; border-radius: 5px; background: var(--bg);
+    }
+    .shortcut-none { color: var(--muted); font-size: 12px; font-style: italic; }
+    .twisty { width: 18px; flex-shrink: 0; text-align: center; font-size: 10px; opacity: .7; }
+    .themes { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; }
+    .theme {
+      display: flex; flex-direction: column; align-items: flex-start; gap: 4px; padding: 10px;
+      font: inherit; color: inherit; text-align: left; background: var(--bg);
+      border: 1px solid var(--border); border-radius: 8px; cursor: pointer;
+    }
+    .theme.selected { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+    .theme-icons { display: flex; align-items: center; gap: 7px; margin-bottom: 4px; }
+    .theme-icons svg { width: 18px; height: 18px; }
+    .theme-name { font-weight: 600; }
+    .theme small { color: var(--muted); font-size: 12px; line-height: 1.35; }
+    input[type="checkbox"] { flex-shrink: 0; width: 18px; height: 18px; accent-color: var(--accent); }
+    .actions { margin-top: 16px; display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; }
+    button { font: inherit; padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border); background: var(--card); color: var(--fg); cursor: pointer; }
+    #status { color: var(--muted); font-size: 12px; }
+    p.note { color: var(--muted); font-size: 12px; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Superfavorites Bar</h1>
+    <section>
+      <label class="row">
+        <span>Show the bar<small id="toggleShortcut">You can also press Alt+Shift+Y.</small></span>
+        <input type="checkbox" id="enabled">
+      </label>
+      <div class="row stacked">
+        <span>Superfavorites folder<small>Its subfolders are your workspaces and sticky folders.</small></span>
+        <div class="folder-choice">
+          <span id="folderPath" class="folder-path"></span>
+          <button id="changeFolder">Change…</button>
+        </div>
+      </div>
+      <label class="row">
+        <span>Position</span>
+        <select id="position">
+          <option value="top">Top of the page</option>
+          <option value="bottom">Bottom of the page</option>
+        </select>
+      </label>
+      <label class="row">
+        <span>Push page content<small>Shifts the page so the bar doesn't cover it.</small></span>
+        <input type="checkbox" id="pushContent">
+      </label>
+      <label class="row">
+        <span>Show names<small>Turn off to show favicons only.</small></span>
+        <input type="checkbox" id="showTitles">
+      </label>
+    </section>
+
+    <h2>Pinned favorites</h2>
+    <section>
+      <label class="row">
+        <span>Keep pin tabs in a ★ group<small>Tabs showing a pinned favorite stay in a collapsed ★ tab group, one small chip in the tab bar. Clicking a pin opens its tab; the group folds away when you switch to another tab. Tabs pinned in the tab bar aren't moved.</small></span>
+        <input type="checkbox" id="tuckPins">
+      </label>
+      <label class="row">
+        <span>Open-tab dots<small>A small dot under a pin when a tab already shows it.</small></span>
+        <input type="checkbox" id="showOpenDots">
+      </label>
+      <label class="row">
+        <span>Unread dots<small>A red dot when the tab's title says there's something new, e.g. "• Slack".</small></span>
+        <input type="checkbox" id="showUnreadDots">
+      </label>
+      <label class="row">
+        <span>Notification numbers<small>The unread count from the tab's title, e.g. "Inbox (3)". When off, a count shows as a red dot instead, unless unread dots are off too.</small></span>
+        <input type="checkbox" id="showUnreadCounts">
+      </label>
+    </section>
+
+    <h2>Quick switcher</h2>
+    <section>
+      <label class="row">
+        <span>Size<small>Zooms the whole Option/Alt+A palette: text, icons, rows and the window itself.</small></span>
+        <select id="switcherZoom">
+          <option value="0.8">Small (80%)</option>
+          <option value="0.9">Compact (90%)</option>
+          <option value="1">Normal (100%)</option>
+          <option value="1.15">Large (115%)</option>
+          <option value="1.3">Larger (130%)</option>
+          <option value="1.5">Huge (150%)</option>
+        </select>
+      </label>
+    </section>
+
+    <h2>Keyboard shortcuts</h2>
+    <section>
+      <div id="shortcuts"></div>
+      <div class="row">
+        <span><small>The browser only lets you change these on its own shortcuts page.</small></span>
+        <button id="changeShortcuts">Change shortcuts…</button>
+      </div>
+    </section>
+
+    <h2>Typography</h2>
+    <section>
+      <div class="row stacked">
+        <span>Preview<small>The bar and its drop-down menus. Saved on this device only.</small></span>
+        <div id="preview" class="preview"></div>
+      </div>
+      <label class="row">
+        <span>Font</span>
+        <select id="fontFamily"><option value="">Default (Segoe UI / system)</option></select>
+      </label>
+      <label class="row">
+        <span>Size</span>
+        <span class="range"><input type="range" id="fontSize" min="10" max="18" step="1"><output id="fontSizeValue"></output></span>
+      </label>
+      <label class="row">
+        <span>Weight</span>
+        <select id="fontWeight">
+          <option value="300">Light</option>
+          <option value="400">Regular</option>
+          <option value="500">Medium</option>
+          <option value="600">Semibold</option>
+          <option value="700">Bold</option>
+        </select>
+      </label>
+      <label class="row">
+        <span>Width<small>Condensed and expanded need a font that has those styles, such as Arial Narrow, Avenir Next Condensed or Roboto Condensed. Other fonts stay at normal width.</small></span>
+        <select id="fontStretch">
+          <option value="extra-condensed">Extra condensed</option>
+          <option value="condensed">Condensed</option>
+          <option value="semi-condensed">Semi-condensed</option>
+          <option value="normal">Normal</option>
+          <option value="semi-expanded">Semi-expanded</option>
+          <option value="expanded">Expanded</option>
+        </select>
+      </label>
+      <label class="row">
+        <span>Letter spacing</span>
+        <select id="letterSpacing">
+          <option value="tight">Tight</option>
+          <option value="normal">Normal</option>
+          <option value="wide">Wide</option>
+          <option value="wider">Wider</option>
+        </select>
+      </label>
+      <label class="row">
+        <span>Case</span>
+        <select id="textCase">
+          <option value="normal">As written</option>
+          <option value="small-caps">Small caps</option>
+          <option value="upper">UPPERCASE</option>
+        </select>
+      </label>
+      <div class="row">
+        <span></span>
+        <button id="resetTypography">Reset to default</button>
+      </div>
+    </section>
+
+    <h2>Icons</h2>
+    <section>
+      <div class="row stacked">
+        <span>Icon theme<small>The bar's folder, arrow, + and other built-in icons. Saved on this device only.</small></span>
+        <div id="iconThemes" class="themes"></div>
+      </div>
+    </section>
+    <dialog id="folderDialog">
+      <form method="dialog">
+        <div class="dialog-title">Choose the Superfavorites folder</div>
+        <small class="dialog-help">Click ▸ to open a folder. Its subfolders become your workspaces and sticky folders.</small>
+        <div id="folderPicker" class="picker" tabindex="0"></div>
+        <div class="dialog-buttons">
+          <button value="cancel">Cancel</button>
+          <button value="choose" id="chooseFolder" class="primary">Choose</button>
+        </div>
+      </form>
+    </dialog>
+    <div class="actions">
+      <button id="manage">Manage favorites</button>
+      <button id="manageExtension">Manage extension</button>
+      <button id="openTab">Open in a tab</button>
+      <button id="done">Done</button>
+      <span id="status"></span>
+    </div>
+    <p class="note">Browsers don't let extensions draw on their own pages (edge://, chrome://), the New Tab page or the extension stores, so the bar doesn't appear there.</p>
+  </main>
+  <script src="icon-themes.js"></script>
+  <script src="options.js"></script>
+</body>
+</html>
