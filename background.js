@@ -641,6 +641,10 @@ async function handleMessage(msg, sender) {
         title: SEPARATOR_TITLE,
         url: SEPARATOR_URL,
       });
+    case 'makeSticky':
+      // Marked first, so the folder never shows up as a workspace on the way.
+      await setSticky(msg.id, true);
+      return chrome.bookmarks.move(msg.id, { parentId: await resolveFolderId() });
     case 'setSticky':
       return setSticky(msg.id, msg.sticky);
     case 'saveWorkspace':

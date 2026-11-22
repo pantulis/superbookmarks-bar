@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Superfavorites Bar",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "homepage_url": "https://github.com/pantulis/superfavorites-bar",
   "description": "Shows a second bookmarks bar, organized into workspaces, filled from any bookmarks folder you choose.",
   "permissions": ["bookmarks", "storage", "favicon", "scripting", "fontSettings", "tabs", "tabGroups"],

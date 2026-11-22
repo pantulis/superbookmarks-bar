@@ -416,6 +416,8 @@
   function teardown() {
     host.remove();
     document.getElementById(PUSH_STYLE_ID)?.remove();
+    unshiftFixed();
+    shiftObserver?.disconnect();
   }
 
   function send(msg) {
@@ -668,11 +670,93 @@
   // Shift the page so the bar doesn't cover its content.
   function applyPush(on) {
     let style = document.getElementById(PUSH_STYLE_ID);
-    if (!on) return style?.remove();
+    if (!on) {
+      unshiftFixed();
+      return style?.remove();
+    }
     style ??= h('style', { id: PUSH_STYLE_ID });
     const side = settings.position === 'bottom' ? 'margin-bottom' : 'margin-top';
     style.textContent = `html { ${side}: ${BAR_HEIGHT / pageZoom}px !important; }`;
     if (!style.isConnected) (document.head ?? document.documentElement).append(style);
+    if (shiftKey !== style.textContent) unshiftFixed(); // the side or the zoom changed
+    shiftKey = style.textContent;
+    scheduleShift();
+  }
+
+  // Fixed and sticky elements (LinkedIn's header, for example) ignore the margin
+  // above, so they can end up under the bar. Those anchored near the bar's edge
+  // of the window are moved along with the page: fixed ones with `translate`,
+  // which leaves their own top and transform to the page, and sticky ones
+  // through `top`, which only matters while they're stuck. Elements anchored
+  // a little further in (a sticky tab strip under a fixed header) move too, so
+  // they stay clear of what's above them. Pages add and change these as they
+  // go, so look again after scrolling, resizing and DOM changes.
+  const SHIFT_REACH = 160; // how far from the edge to look, in CSS pixels
+  const shifted = new Map(); // element -> [property, inline value, priority] to restore
+  let shiftTimer = null;
+  let shiftObserver = null;
+  let shiftKey = ''; // the push style the shifts were made for
+
+  function scheduleShift() {
+    if (!shiftObserver) {
+      shiftObserver = new MutationObserver(scheduleShift);
+      shiftObserver.observe(document.documentElement, { childList: true, subtree: true });
+      addEventListener('scroll', scheduleShift, { passive: true, capture: true });
+      addEventListener('resize', scheduleShift);
+    }
+    shiftTimer ??= setTimeout(() => {
+      shiftTimer = null;
+      shiftFixed();
+    }, 200);
+  }
+
+  function shiftFixed() {
+    if (!document.getElementById(PUSH_STYLE_ID)) return;
+    const height = BAR_HEIGHT / pageZoom;
+    const bottom = settings.position === 'bottom';
+    const side = bottom ? 'bottom' : 'top';
+    const seen = new Set();
+    for (let d = height / 2; d < height + SHIFT_REACH; d += 24) {
+      const y = bottom ? innerHeight - d : d;
+      for (let x = 4; x < innerWidth; x += 80) {
+        for (let el of document.elementsFromPoint(x, y)) {
+          // The element hit may be inside the fixed or sticky one.
+          for (; el && el !== document.body && el !== document.documentElement; el = el.parentElement) {
+            if (el === host || seen.has(el)) break;
+            const { position } = getComputedStyle(el);
+            if (position === 'fixed' || position === 'sticky') break;
+          }
+          if (!el || el === host || el === document.body || el === document.documentElement || seen.has(el)) continue;
+          seen.add(el);
+          if (!shifted.has(el)) shiftElement(el, side, height);
+        }
+      }
+    }
+  }
+
+  function shiftElement(el, side, height) {
+    const css = getComputedStyle(el);
+    const offset = parseFloat(css[side]);
+    if (Number.isNaN(offset)) return; // `auto`: anchored to the other edge, or not at all
+    const rect = el.getBoundingClientRect();
+    // Only what sits at its offset from the edge: stuck, not scrolling past.
+    const distance = side === 'top' ? rect.top : innerHeight - rect.bottom;
+    if (Math.abs(distance - offset) > 1) return;
+    // Full-window overlays (dialogs, backdrops) would only be pushed off screen.
+    if (rect.height > innerHeight - 2 * height) return;
+    const sticky = css.position === 'sticky';
+    const property = sticky ? side : 'translate';
+    shifted.set(el, [property, el.style.getPropertyValue(property), el.style.getPropertyPriority(property)]);
+    const value = sticky ? `${offset + height}px` : `0 ${side === 'bottom' ? -height : height}px`;
+    el.style.setProperty(property, value, 'important');
+  }
+
+  function unshiftFixed() {
+    for (const [el, [property, value, priority]] of shifted) {
+      if (value) el.style.setProperty(property, value, priority);
+      else el.style.removeProperty(property);
+    }
+    shifted.clear();
   }
 
   // --- Menus -----------------------------------------------------------------
@@ -839,6 +923,8 @@
           return [name || '(untitled)', move, inWorkspace && ws === workspace, { icon: workspaceIcon(ws) }];
         });
       actions.push(['Move to workspace', null, !workspaces.length || (inWorkspace && workspaces.length < 2), { submenu: moveTargets }]);
+      // Moves the folder up beside the workspaces, so it shows in all of them.
+      if (isFolder && !inOthers) actions.push(['Make sticky folder', () => send({ type: 'makeSticky', id: node.id })]);
       actions.push(['Edit…', () => editNode(node, el.parent), false, { dialog: true }]);
       actions.push(['Delete', () => {
         if (!isFolder || confirm(`Delete the folder "${node.title}" and everything in it?`)) {
