@@ -38,4 +38,3 @@ jobs:
         run: >
           gh release create "$GITHUB_REF_NAME" "${{ steps.pack.outputs.zip }}"
           --title "Superfavorites Bar ${GITHUB_REF_NAME#v}" --generate-notes --verify-tag
-          if-no-files-found: error
