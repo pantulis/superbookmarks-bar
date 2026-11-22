@@ -934,6 +934,10 @@
     }
     actions.push(null);
     actions.push(['Tidy tabs…', () => openTidy(), false, { icon: icon('tidy'), dialog: true }]);
+    if (!node) {
+      const bottom = settings.position === 'bottom';
+      actions.push([`Send to ${bottom ? 'top' : 'bottom'} of page`, () => chrome.storage.local.set({ position: bottom ? 'top' : 'bottom' })]);
+    }
     actions.push(['Settings…', () => openSettings()]);
     showContextMenu(actions, el?.depth ?? 0, x, y);
   }
