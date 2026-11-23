@@ -121,6 +121,18 @@
       </label>
     </section>
 
+    <h2>Start page</h2>
+    <section>
+      <div class="row stacked">
+        <span>New tabs show all your workspaces and sticky folders, with your pinned favorites on top.<small>To also see it when you click Home or when the browser starts, copy its address into the browser's settings: <span id="startHelp"></span></small></span>
+        <div class="folder-choice">
+          <span id="startUrl" class="folder-path"></span>
+          <button id="copyStart">Copy address</button>
+          <button id="openStart">Open</button>
+        </div>
+      </div>
+    </section>
+
     <h2>Pinned favorites</h2>
     <section>
       <label class="row">
@@ -248,7 +260,7 @@
       <button id="done">Done</button>
       <span id="status"></span>
     </div>
-    <p class="note">Browsers don't let extensions draw on their own pages (edge://, chrome://), the New Tab page or the extension stores, so the bar doesn't appear there.</p>
+    <p class="note">Browsers don't let extensions draw on their own pages (edge://, chrome://), or the extension stores, so the bar doesn't appear there. New tabs show the start page instead.</p>
   </main>
   <script src="icon-themes.js"></script>
   <script src="options.js"></script>

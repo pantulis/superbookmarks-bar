@@ -4,7 +4,7 @@
 set -eu
 cd "$(dirname "$0")/.."
 
-FILES="manifest.json background.js content.js icon-themes.js options.html options.js icons"
+FILES="manifest.json background.js content.js icon-themes.js options.html options.js start.html start.js icons"
 VERSION=$(python3 -c 'import json; print(json.load(open("manifest.json"))["version"])')
 
 # A release tag (v1.2.3) must match the manifest's version.

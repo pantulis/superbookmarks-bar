@@ -565,7 +565,16 @@ chrome.storage.onChanged.addListener((changes, area) => {
   if ('folderId' in changes) schedulePublish();
   if ('enabled' in changes) updateBadge();
   if ('tuckPins' in changes) changes.tuckPins.newValue ? scheduleTuck() : untuckAll();
+  if (changes.workspaceId?.newValue) noteWorkspaceUse(changes.workspaceId.newValue);
 });
+
+// Workspace ids, most recently selected first, so the start page can list the
+// workspaces in the order they were last used.
+async function noteWorkspaceUse(id) {
+  const { recentWorkspaces = [] } = await chrome.storage.local.get('recentWorkspaces');
+  if (recentWorkspaces[0] === id) return;
+  await chrome.storage.local.set({ recentWorkspaces: [id, ...recentWorkspaces.filter((w) => w !== id)].slice(0, 100) });
+}
 
 // --- Toggle ------------------------------------------------------------------
 

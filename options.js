@@ -296,6 +296,24 @@ async function init() {
   document.getElementById('manageExtension').addEventListener('click', () =>
     chrome.tabs.create({ url: `${BROWSER}://extensions/?id=${chrome.runtime.id}` }),
   );
+  const startUrl = chrome.runtime.getURL('start.html');
+  document.getElementById('startUrl').textContent = startUrl;
+  document.getElementById('startHelp').textContent = BROWSER === 'edge'
+    ? 'Settings › Start, home, and new tabs.'
+    : 'Settings › Appearance › Show home button, or Settings › On startup.';
+  document.getElementById('openStart').addEventListener('click', () => chrome.tabs.create({ url: startUrl }));
+  document.getElementById('copyStart').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(startUrl);
+      status.textContent = 'Address copied';
+    } catch {
+      // The page showing the settings window may not allow the clipboard:
+      // select the address so it can be copied by hand.
+      getSelection().selectAllChildren(document.getElementById('startUrl'));
+      status.textContent = `Press ${/Mac/.test(navigator.platform) ? '⌘' : 'Ctrl+'}C to copy`;
+    }
+    setTimeout(() => (status.textContent = ''), 3000);
+  });
   const manage = document.getElementById('manage');
   if (BROWSER === 'chrome') manage.textContent = 'Manage bookmarks';
   manage.addEventListener('click', () => chrome.tabs.create({ url: FAVORITES_PAGE }));

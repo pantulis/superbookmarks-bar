@@ -490,7 +490,7 @@
   // The full settings page in a large window over the page. The page sends a
   // message to close it (its Done button or Esc).
   function openSettings() {
-    const frame = h('iframe', { className: 'settings-frame', src: chrome.runtime.getURL('options.html#dialog'), title: 'Superfavorites Bar settings' });
+    const frame = h('iframe', { className: 'settings-frame', src: chrome.runtime.getURL('options.html#dialog'), title: 'Superfavorites Bar settings', allow: 'clipboard-write' });
     const close = showDialog(frame);
     const onMessage = (e) => {
       if (e.source !== frame.contentWindow || e.data?.type !== 'superfavorites:close-settings') return;
@@ -1877,7 +1877,7 @@
   // Tabs in the background don't redraw: they note what changed and catch up
   // when shown, so a change costs one redraw instead of one per open tab.
   let stale = null; // null, 'pins' or 'all'
-  const IGNORED = ['folderId', 'others']; // read by the service worker / lazily
+  const IGNORED = ['folderId', 'others', 'recentWorkspaces']; // read by the service worker / lazily / the start page
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'local') return;
     if ('others' in changes && othersRead) {

@@ -1,6 +1,6 @@
 # Privacy policy
 
-*Superfavorites Bar, last updated 21 November 2026*
+*Superfavorites Bar, last updated 23 November 2026*
 
 Superfavorites Bar doesn't collect, sell or share any personal data. It has no servers, no analytics and no tracking, and it never sends your bookmarks, tabs or browsing activity anywhere.
 
@@ -23,6 +23,7 @@ The extension makes one kind of request: when you give a workspace an icon by we
 - **Tabs and tab groups:** used to show which pinned favorites are open or have unread items, to list and close tabs in **Tidy tabs**, and for the optional ★ group that holds pinned-favorite tabs. Tab titles and addresses are only used on your device.
 - **Favicons:** shows each site's icon from the browser's icon cache.
 - **Font settings:** lists the fonts installed on your device for the typography settings.
+- **New Tab page and search:** new tabs show the extension's start page, drawn on your device from your favorites. When a search there matches none of your favorites, pressing Enter hands the text to your browser's default search engine, exactly as typing it in the address bar would. The extension doesn't keep or send it anywhere else.
 - **Storage and scripting:** keeps settings on the device, and adds the bar to tabs that were already open when the extension was installed or updated.
 
 ## Contact

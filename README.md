@@ -33,7 +33,7 @@ Superfavorites
   - **Type to search** workspace names and every favorite: workspaces, sticky folders, pins and Other favorites. Names match even with letters skipped ("gcal" finds "Google Calendar"); addresses must match a continuous run of letters. Each result shows where it lives (e.g. `💼 Work › Docs`).
   - **Enter** opens the result, switching to its tab if one is already open, like a pin. **⌘/Ctrl+Enter** opens it in a new tab, and **Shift+Enter** in a new window.
 
-  **Settings → Quick switcher → Size** zooms the whole palette, from 80% to 150%, and the palette still fits the window. You can change the shortcut at `edge://extensions/shortcuts`. Like the bar, the switcher doesn't work on the browser's own pages or the New Tab page.
+  **Settings → Quick switcher → Size** zooms the whole palette, from 80% to 150%, and the palette still fits the window. You can change the shortcut at `edge://extensions/shortcuts`. Like the bar, the switcher doesn't work on the browser's own pages or the start page.
 - **New workspace…**, **Edit workspace…** and **Delete workspace** are in the selector's menu. Editing lets you choose a name and an icon. Right-click a workspace in the menu to edit or delete that one.
 ![Editing a workspace: name, type, color and icon](docs/screenshots/edit-workspace.png)
 
@@ -148,6 +148,17 @@ The two groups:
 
 The button says exactly what will happen, e.g. **Close 3 tabs · Add 2**. Favorites are added at the end of the workspace.
 
+## Start page
+
+New tabs show all your favorites at once:
+- the pinned favorites on top;
+- the current workspace (the one selected on the bar), across the page;
+- the other workspaces, most recently used first, then the sticky folders.
+
+The other workspaces sit side by side and scroll sideways if they don't fit. Folders start closed; click one to see what's inside. Opening a favorite from another workspace also switches the bar to that workspace. Type anywhere to search every favorite; **Enter** opens the first match, or searches the web with your default search engine if no favorite matches.
+
+When the extension is installed, the browser asks whether to keep the new New Tab page; choosing to undo it turns the extension off. **Settings › Start page** shows the page's address too: copy it into the browser's settings to also use it as your Home page or the page the browser opens at startup (Edge: **Settings › Start, home, and new tabs**; Chrome: **Settings › Appearance › Show home button** or **Settings › On startup**).
+
 ## Install
 
 1. Open `edge://extensions` in Edge or `chrome://extensions` in Chrome.
@@ -229,7 +240,7 @@ For the store listings:
 
 ## Limitations
 
-- Browsers don't let extensions inject into their own pages (`edge://`, `chrome://`), the New Tab page or the extension stores, so the bar doesn't appear there.
+- Browsers don't let extensions inject into their own pages (`edge://`, `chrome://`), extension pages or the extension stores, so the bar doesn't appear there. That includes the start page on new tabs, which shows the pinned favorites itself.
 - The bar belongs to each page, not to the browser window, so it reloads along with the page.
 - Zooming a page (Ctrl/⌘ + or −) doesn't zoom the bar, its menus or its dialogs. The bar counters each tab's zoom so it keeps the same size. For a bigger or smaller bar, use **Settings → Typography**.
 - Some sites have their own fixed-position header. With "push page content" turned on, that header can still sit under the bar.
@@ -244,6 +255,7 @@ For the store listings:
 | `content.js` | Draws the bar inside a closed Shadow DOM on each page |
 | `icon-themes.js` | The icon themes, shared by the bar and the Settings page |
 | `options.html` / `options.js` | Settings page |
+| `start.html` / `start.js` | Start page shown on new tabs: every workspace on one page |
 | `icons/` | Extension icons |
 | `docs/screenshots/` | README screenshots, rendered with a sample set of favorites |
 | `docs/store/` | Store screenshots (1280×800), promo tiles and logo |

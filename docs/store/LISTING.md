@@ -24,6 +24,9 @@ ALWAYS AT HAND
 • Folders open as menus and submenus. Drag and drop to rearrange, and add separators to group things.
 • Pinned favorites and search results switch to the site's tab if it's already open, instead of opening a duplicate.
 
+NEW TAB PAGE
+This extension replaces the New Tab page. New tabs show all your workspaces and sticky folders at once, with your pinned favorites on top. Type to search your favorites; if none match, Enter searches the web with your browser's default search engine. You can also set the page as your Home or startup page.
+
 TIDY TABS
 Press Alt+Shift+K, or use the bar's menu, to review the tabs in the window. Close the ones you've already saved as favorites in one go, and add the ones worth keeping to your workspace or one of its folders.
 
@@ -38,7 +41,7 @@ PRIVATE BY DESIGN
 Superfavorites Bar collects no data. It has no servers, no analytics and no tracking, and your favorites and tabs never leave your device except through your browser's own sync.
 
 GETTING STARTED
-After installing, the bar appears on web pages. Browsers don't allow extensions on their own pages, such as settings and the New Tab page. The extension creates a "Superfavorites" folder under Other favorites. Add favorites to it, or click + on the bar, and open Settings from the toolbar icon to choose another folder.
+After installing, the bar appears on web pages and new tabs show your favorites. Browsers don't allow extensions on their own pages, such as settings. The extension creates a "Superfavorites" folder under Other favorites. Add favorites to it, or click + on the bar, and open Settings from the toolbar icon to choose another folder.
 
 Open source: https://github.com/pantulis/superfavorites-bar
 ```
@@ -68,7 +71,7 @@ Edge: at most 1,000 characters.
 ```
 Superfavorites Bar has a single purpose: to give the user a second bookmarks bar, organized into workspaces, so they can reach their own favorites quickly.
 
-The bar is drawn at the top or bottom of web pages and shows the favorites in a folder the user chooses. Each subfolder is a workspace (for example Work, Home or Travel), and the user switches between them from the bar or with a keyboard shortcut. Every feature serves that bar: pinned and sticky favorites that stay visible in every workspace, folder menus, a search across favorites, a Tidy tabs dialog that closes tabs already saved as favorites and saves the rest, and settings for how the bar looks (position, icon theme, typography).
+The bar is drawn at the top or bottom of web pages and shows the favorites in a folder the user chooses. Each subfolder is a workspace (for example Work, Home or Travel), and the user switches between them from the bar or with a keyboard shortcut. Every feature serves that bar: pinned and sticky favorites that stay visible in every workspace, folder menus, a search across favorites, a New Tab page that lays out all the workspaces at once, a Tidy tabs dialog that closes tabs already saved as favorites and saves the rest, and settings for how the bar looks (position, icon theme, typography).
 
 Everything is stored in the user's own favorites and on their device. There is no account, no server and no tracking.
 ```
@@ -84,6 +87,7 @@ Everything is stored in the user's own favorites and on their device. There is n
 | `fontSettings` | Lists the fonts installed on the device for the typography settings. |
 | `tabs` | Shows which pinned favorites are open or have unread items, switches to a favorite's tab if it's already open, and lists the window's tabs in Tidy tabs. |
 | `tabGroups` | Optional feature that keeps pinned-favorite tabs in a single collapsed ★ tab group. |
+| `search` | The New Tab page replaces the browser's own, which has a web search box. When the user's search matches none of their favorites, pressing Enter searches the web with the browser's default search engine, as the browser's New Tab page would. The search text isn't stored or sent anywhere else. |
 | Host permission `<all_urls>` / content script on all sites | The bar is drawn at the top or bottom of every page the user visits. It doesn't read or change page content beyond adding the bar and, if enabled, shifting the page down so the bar doesn't cover it. |
 
 ## Remote code
@@ -99,12 +103,13 @@ Privacy policy: https://github.com/pantulis/superfavorites-bar/blob/main/PRIVACY
 ## Notes for certification
 
 ```
-No account or setup needed. After installing, a bar appears at the top of web pages (not on edge:// pages or the New Tab page). On first run the extension creates a folder named "Superfavorites" under Other favorites; add a few favorites to it (or click + on the bar) to see them.
+No account or setup needed. After installing, a bar appears at the top of web pages (not on edge:// pages), and new tabs show the extension's start page, which lists the favorites by workspace. On first run the extension creates a folder named "Superfavorites" under Other favorites; add a few favorites to it (or click + on the bar) to see them.
 
 To try the main features:
 - Click the workspace selector at the left of the bar to create or switch workspaces.
 - Press Alt+A for the quick switcher; type to search favorites.
 - Right-click the bar for Tidy tabs and Settings, or click the toolbar icon for settings.
+- Open a new tab to see every workspace at once; type to filter the favorites, or press Enter with no match to search the web with the default search engine.
 
 The extension makes no network requests except downloading a workspace icon from a web address the user enters. Hidden favorites with https://superfavorites.invalid/... addresses are markers that store settings (sticky folder, color, separator) inside the favorites so they sync; the .invalid domain is reserved and never resolves.
 ```
